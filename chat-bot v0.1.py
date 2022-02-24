@@ -14,6 +14,6 @@ def start(message, res=False):
 def get_text_message(message):
     chat_id = message.chat.id
     ms_text = message.text
-    bot.send_message(chat_id, text="Ага! сооб.:"+ ms_text)
+    bot.send_message(chat_id, text="Ага! сообщение:"+ ms_text)
 
 bot.polling(none_stop=True, interval=0)
