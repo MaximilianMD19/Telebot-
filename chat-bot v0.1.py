@@ -1,16 +1,19 @@
-# This is a sample Python script.
+import telebot
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+bot = telebot.TeleBot('5107250105:AAGmEXjY-JZIEO9lJPToN2M4GI_ikwmU9Z0')
 
+@bot.message_handler(commands=["start"])
+def start(message, res=False):
+    chat_id = message.chat.id
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
+    bot.send_message(chat_id,
+                     text="Привет, {0.first_name}! Я тестовый бот для курса программирования на языке ПаЙтон".format(
+                         message.from_user))
 
+@bot.message_handler(commands=["text"])
+def get_text_message(message):
+    chat_id = message.chat.id
+    ms_text = message.text
+    bot.send_message(chat_id, text="Ага! сооб.:"+ ms_text)
 
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+bot.polling(none_stop=True, interval=0)
