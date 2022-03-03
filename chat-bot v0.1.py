@@ -35,14 +35,43 @@ def get_text_messages(message):
 
     elif ms_text == "Развлечения":  # ..................................................................................
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-        btn1 = types.KeyboardButton("Прислать собаку")
+        btn1 = types.KeyboardButton("21")
         btn2 = types.KeyboardButton("Прислать анекдот")
         back = types.KeyboardButton("Вернуться в главное меню")
         markup.add(btn1, btn2, back)
         bot.send_message(chat_id, text="Развлечения", reply_markup=markup)
 
-    elif ms_text == "/dog" or ms_text == "Прислать собаку!":  # .........................................................
-        bot.send_message(chat_id, text="еще не готово...")
+    elif ms_text == "/21" or ms_text == "21":# ......................................................
+        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+        c = [6,7,8,9,10,11] * 4
+        import random
+        random.shuffle(c)
+        count_k = 0
+        btn1 = types.KeyboardButton("Вытащить карту")
+        btn2 = types.KeyboardButton("Остановится")
+        markup.add(btn1, btn2)
+        bot.send_message(chat_id, text="Что будете делать?",reply_markup=markup)
+        while True:
+            if ms_text == "Вытащить карту":
+                count_k += c[0]
+                c.pop(0)
+                bot.send_message(chat_id, text="Что будете делать?", reply_markup=markup)
+            elif len(c)==0:
+                bot.send_message(chat_id, text="Карт нет")
+            elif ms_text == "":
+                bot.polling(none_stop=True, interval=1)
+            elif ms_text == "Остановится":
+                bot.send_message(chat_id, text="Ок")
+                break
+
+        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+        btn1 = types.KeyboardButton("Да")
+        btn2 = types.KeyboardButton("Нет")
+        markup.add(btn1, btn2)
+        if count_k > 21 or count_k < 21:
+            bot.send_message(chat_id, text="Loser! Переиграть?", reply_markup=markup)
+        elif count_k == 21:
+            bot.send_message(chat_id, text="Win! Переиграть?", reply_markup=markup)
 
     elif ms_text == "Прислать анекдот":  # .............................................................................
         bot.send_message(chat_id, text="еще не готово...")
@@ -55,8 +84,11 @@ def get_text_messages(message):
 
     elif ms_text == "Связь" or ms_text == "❓ Связь":  # ...............................................................
         bot.send_message(chat_id, "Автор: Полуновский Максимилиан")
+        key1 = types.InlineKeyboardMarkup()
+        btn1 = types.InlineKeyboardButton(text="Напишите автору", url="https://t.me/mBumblebee")
+        key1.add(btn1)
         img = open('ddd.png', 'rb')
-        bot.send_photo(message.chat.id, img)
+        bot.send_photo(message.chat.id, img, reply_markup=key1)
 
     elif ms_text == "Отключиться":  # .................................................................
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
@@ -70,6 +102,7 @@ def get_text_messages(message):
         btn2 = types.KeyboardButton("❓ Связь")
         markup.add(btn1, btn2)
         bot.send_message(chat_id, text="C Возвращением) ", reply_markup=markup)
+
     else:  # ...........................................................................................................
         bot.send_message(chat_id, text="Я тебя слышу!!! Ваше сообщение: " + ms_text)
 
