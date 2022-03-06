@@ -1,3 +1,5 @@
+import time
+
 import telebot
 from telebot import types
 
@@ -41,29 +43,34 @@ def get_text_messages(message):
         markup.add(btn1, btn2, back)
         bot.send_message(chat_id, text="Развлечения", reply_markup=markup)
 
-    elif ms_text[:3] == "/21" or ms_text == "21":   # ..................................................................
+    elif ms_text[:3] == "/21" or ms_text == "21" or ms_text == "Переиграть":   # .......................................
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
         btn1 = types.KeyboardButton("/21/Вытащить карту")
         btn2 = types.KeyboardButton("/21/Остановиться")
         markup.add(btn1, btn2)
-        if ms_text == "/21":
-            bot.send_message(chat_id, text="Что будете делать?", reply_markup=markup)
+        if ms_text == "/21" or ms_text == "21":
+            bot.send_message(chat_id, text="---Игра в 21 ---\nЧто будете делать?", reply_markup=markup)
         count_k = 0
+        c = [6, 7, 8, 9, 10, 11] * 4
+        import random
+        random.shuffle(c)
         if ms_text == "/21/Вытащить карту":
-            c = [6, 7, 8, 9, 10, 11] * 4
-            import random
-            random.shuffle(c)
+            # if бот.***сообщ[-1].split() )[-1] != "делать?":
+            # cds = message.message_id - 1
+            # tr = bot.sendMessage(chat_id,)
+            # bot.send_message(chat_id, text=cds)
+            # bot.send_message(chat_id, text=tr)
             count_k += c[0]
-            bot.send_message(chat_id, text=f"Вы вытащили карту номиналом {c[0]}\nУ Вас {count_k}")
+            bot.send_message(chat_id, text=f"Вы вытащили карту номиналом {c[0]}")
             c.pop(0)
             if len(c) == 0:
                 bot.send_message(chat_id, text="Карт нет")  # !!!!
-            bot.send_message(chat_id, text="Что будете делать?", reply_markup=markup)
+            bot.send_message(chat_id, text=f"У Вас {count_k}", reply_markup=markup)
         elif ms_text == "/21/Остановиться":
             bot.send_message(chat_id, text="Ок")
             markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-            btn1 = types.KeyboardButton("Да")
-            btn2 = types.KeyboardButton("Нет")
+            btn1 = types.KeyboardButton("Переиграть")
+            btn2 = types.KeyboardButton("Главное меню")
             markup.add(btn1, btn2)
             if count_k > 21 or count_k < 21:
                 bot.send_message(chat_id, text="Loser! Переиграть?", reply_markup=markup)
@@ -71,7 +78,12 @@ def get_text_messages(message):
                 bot.send_message(chat_id, text="Win! Переиграть?", reply_markup=markup)
 
     elif ms_text == "Прислать анекдот":     # ......................................................................
-        bot.send_message(chat_id, text="еще не готово...")
+        bot.send_message(chat_id, text="еще не готово... 78")
+        cdsdsd = message.message_id-1
+        cdsdsdtext = message.text
+        cdsdsdtext = cdsdsdtext.split(" ")
+        bot.send_message(chat_id, text=cdsdsd)
+        bot.send_message(chat_id, text=cdsdsdtext[-1])
 
     elif ms_text == "WEB-камера":
         bot.send_message(chat_id, text="еще не готово...")
