@@ -78,12 +78,7 @@ def get_text_messages(message):
                 bot.send_message(chat_id, text="Win! Переиграть?", reply_markup=markup)
 
     elif ms_text == "Прислать анекдот":     # ......................................................................
-        bot.send_message(chat_id, text="еще не готово... 78")
-        cdsdsd = message.message_id-1
-        cdsdsdtext = message.text
-        cdsdsdtext = cdsdsdtext.split(" ")
-        bot.send_message(chat_id, text=cdsdsd)
-        bot.send_message(chat_id, text=cdsdsdtext[-1])
+        bot.send_message(chat_id, text="еще не готово...")
 
     elif ms_text == "WEB-камера":
         bot.send_message(chat_id, text="еще не готово...")
