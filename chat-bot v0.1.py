@@ -57,7 +57,7 @@ def get_text_messages(message):
         if ms_text == "/21/Вытащить карту":
             # if бот.***сообщ[-1].split() )[-1] != "делать?":
             # cds = message.message_id - 1
-            # tr = bot.sendMessage(chat_id,)
+            # tr = bot.sendMessage(chat_id,...)
             # bot.send_message(chat_id, text=cds)
             # bot.send_message(chat_id, text=tr)
             count_k += c[0]
