@@ -174,10 +174,11 @@ def get_text_messages(message):
         btn1 = types.KeyboardButton("Новая жеба")
         btn2 = types.KeyboardButton("Вернуться в главное меню")
         markup.add(btn1, btn2)
-        req = requests.get("http://www.allaboutfrogs.org/funstuff/randomfrog.html").json()
-        print(req)
-        json = req["url"]
-        bot.send_message(chat_id,photo = json, reply_markup=markup)
+        req = requests.get("http://randomwaifu.altervista.org/")
+        soup = bs4.BeautifulSoup(req.text, "html.parser")
+        img = soup.find(class_="center-fit")
+        img = "http://randomwaifu.altervista.org/" + img["src"]
+        bot.send_message(chat_id,img, reply_markup=markup)
 
     elif ms_text == "WEB-камера":     # ..............................................................................
         bot.send_message(chat_id, text="еще не готово...")
