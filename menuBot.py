@@ -41,9 +41,10 @@ class Menu:
 
 m_main = Menu("Главное меню", buttons=["Развлечения", "Игры", "Связь", "Отключиться"])
 
-m_games = Menu("Игры", buttons=["🤚✌✊", "Игра в 21", "Угадай кто?", "Выход"], parent=m_main)
-m_game_21 = Menu("Игра в 21", buttons=["Карту!", "Стоп!", "Выход"], parent=m_games, action="game_21")
-m_game_B_J = Menu("Игра в Black Jack", buttons=["Карту!", "Стоп!", "Выход"], parent=m_games, action="game_B_J")
+m_games = Menu("Игры", buttons=["🤚✌✊", "21", "Black Jack", "Угадай кто?", "Слова", "Выход"], parent=m_main)
+m_game_21 = Menu("21", buttons=["Карту!", "Стоп!", "Выход"], parent=m_games, action="game_21")
+m_game_B_J = Menu("Black Jack", buttons=["Тянуть новую!", "Пас!", "Выход"], parent=m_games, action="game_B_J")
+m_game_words = Menu("Слова", buttons=["Начать", "Закончить"], parent=m_games, action="game_words")
 m_game_rsp = Menu("🤚✌✊", buttons=["✊", "✌ ️", "🤚", "Выход"], parent=m_games, action="game_rsp")
 m_off_illusion = Menu("Пока :3 ", buttons=["Вернуться"], parent=m_main)
 # m_DZ = Menu("ДЗ", buttons=["Задание-1", "Задание-2", "Задание-3", "Задание-4", "Задание-5", "Задание-6", "Выход"], parent=m_main)

@@ -15,14 +15,25 @@ class Card:
             self.suit = card["suit"]
             self.value = card["value"]
             self.cost = self.get_cost_card()
+            self.cost_enemy = self.get_cost_card_enemy()
 
         elif isinstance(card, str):  # карту передали строкой, в формате "2S"
             self.__card_JSON = None
             self.code = card
 
             value = card[0]
-            if value == "X":
-                self.value = "JOKER"
+            if value == "J":
+                self.value = "JACK"
+            elif value == "Q":
+                self.value = "QUEEN"
+            elif value == "K":
+                self.value = "KING"
+            elif value == "A":
+                self.value = "ACE"
+            elif value == "J":
+                self.value = "JACK"
+            else:
+                self.value = value
 
             suit = card[1]
             if suit == "S":
@@ -35,20 +46,35 @@ class Card:
                 self.suit = "♦️"  # Буби
 
             self.cost = self.get_cost_card()
+            self.cost_enemy = self.get_cost_card_enemy()
 
     def get_cost_card(self):
-        if self.value == "J":
+        if self.value == "JACK":
             return 2
-        elif self.value == "Q":
+        elif self.value == "QUEEN":
             return 3
-        elif self.value == "K":
+        elif self.value == "KING":
             return 4
-        elif self.value == "A":
+        elif self.value == "ACE":
             return 11
         elif self.value == "JOKER":
             return 1
         else:
             return int(self.value)
+
+    def get_cost_card_enemy(self):
+        if self.value == "JACK":
+            return 3
+        elif self.value == "QUEEN":
+            return 2
+        elif self.value == "KING":
+            return 1
+        elif self.value == "ACE":
+            return 4
+        elif self.value == "JOKER":
+            return 1
+        else:
+            return (int(self.value)+1)
 
 
 # -----------------------------------------------------------------------
@@ -86,7 +112,7 @@ class Game_B_J:
         # достать из deck_id-колоды card_count-карт
         if response.status_code != 200:
             return False
-
+# ------------- PLAYER
         new_cards = response.json()
         if new_cards["success"] != True:
             return False
@@ -100,25 +126,21 @@ class Game_B_J:
             self.score = self.score + card_obj.cost
 
 # -------------- BOT
-        self.remaining = new_cards["remaining"]  # обновим в классе количество оставшихся карт в колоде
 
         arr_en_newCards = []
         for card in new_cards["cards"]:
             card_obj = Card(card)  # создаем объекты класса Card и добавляем их в список карт у игрока
             arr_en_newCards.append(card_obj)
             self.card_in_game.append(card_obj)
-            self.enemy_score = self.enemy_score + card_obj.cost
-
-        if self.enemy_score >= 17:
-            self.enemy_status = True
-        elif self.score > 21:
-            self.enemy_status = True
-        else:
-            self.enemy_status = None
-
+            self.enemy_score = self.enemy_score + card_obj.cost_enemy
+        if self.enemy_status == None:
+            if self.enemy_score >= 17:
+                self.enemy_status = True
+            elif self.score > 21:
+                self.enemy_status = True
 
 # -------------  Result
-        if self.score > 21 and self.enemy_status == True:
+        if self.score > 21 and self.enemy_status == True and self.status == False:
             if self.score > self.enemy_score:
                 self.status = True
                 text_game = "Ваши очки: " + str(self.score) + "\nОчки врага: " + str(self.enemy_score) + \
@@ -138,7 +160,7 @@ class Game_B_J:
             else:
                 self.status = True
                 text_game = "НиЧья"
-        elif self.status < 21 and self.status == False:
+        elif self.score < 21 and self.status == False:
             if self.score < self.enemy_score:
                 self.status = True
                 text_game = "Ваши очки: " + str(self.score) + "\nОчки врага: " + str(self.enemy_score) + \
