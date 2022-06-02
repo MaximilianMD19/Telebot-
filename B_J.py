@@ -140,7 +140,7 @@ class Game_B_J:
                 self.enemy_status = True
 
 # -------------  Result
-        if self.score > 21 and self.enemy_status == True and self.status == False:
+        if self.score > 21 :
             if self.score > self.enemy_score:
                 self.status = True
                 text_game = "Ваши очки: " + str(self.score) + "\nОчки врага: " + str(self.enemy_score) + \

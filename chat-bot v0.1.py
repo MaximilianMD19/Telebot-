@@ -6,6 +6,7 @@ import telebot
 from telebot import types
 import SECRET
 from io import BytesIO
+from datetime import date
 
 import B_J
 import BotGames
@@ -121,6 +122,9 @@ def get_text_messages(message):
         elif ms_text == "Угадай кто?":
             get_ManOrNot(chat_id)
 
+        elif ms_text == "3 Новости за сегодня":
+            news_beta(chat_id)
+
         elif ms_text == "Связь":  # ..........................................................
             send_link(chat_id)
 
@@ -174,7 +178,7 @@ def quotes():
 def WordGame(a):
     TheWorde = ""
     Word_precent = str(urllib.parse.quote(a))  # Преобр UTF-8 в %
-    count_page = random.randint(1, 11)
+    count_page = random.randint(1, 5)
     url = (f"https://slovopoisk.ru/type-1/begin-{Word_precent}?page={count_page}")  # Определенная стр. с буквой
     word_req = requests.get(url)
     soup = bs4.BeautifulSoup(word_req.text, "html.parser")
@@ -182,21 +186,22 @@ def WordGame(a):
     strongs = str(((count_page - 1)*100) + random.randint(1, 100)) + "."  # Позиция слова на стр.
     print(strongs)
     Words_html = soup.find("span", class_="word-num", string=strongs)
-    if Words_html != None:
-        Words_html = Words_html.next_sibling  # Переход к слову
-        if Words_html != None:
-            for z in range(1, len(Words_html)):
-                if Words_html[z].isalpha(): TheWorde += (Words_html[z])
-        else:
-            Words_html = Words_html.previous_sibling
-            Words_html = Words_html.next_element
-            print(Words_html)
+    print(Words_html)
+    Words_html = Words_html.parent
+    if Words_html.find("a") != None:
+        Words_html = Words_html.find("a")
+        href = "https://slovopoisk.ru" + str(Words_html["href"])
+        TheWorde = Words_html.string
+        TheWorde += f"\n\nСправочник:{href}"
     else:
-        print(Words_html)
-        TheWorde = "Я проиграл, покончи со мной..."
+        Words_html = Words_html.contents
+        Words_html = Words_html[-1]
+        print(f"not href -{Words_html}") # Переход к слову
+        print(TheWorde)
+        for z in range(1, len(Words_html)):
+            if Words_html[z].isalpha(): TheWorde += (Words_html[z])
     return TheWorde
 
-# я - 7 ю-3
 # -----------------------------------------------------------------------
 def get_ManOrNot(chat_id):
     global bot
@@ -240,7 +245,6 @@ def goto_menu(chat_id, name_menu):
     else:
         return False
 
-
 # -----------------------------------------------------------------------
 def tyan():
     req = requests.get("http://randomwaifu.altervista.org/")
@@ -249,14 +253,12 @@ def tyan():
     img = "http://randomwaifu.altervista.org/" + img["src"]
     return img
 
-
 # -----------------------------------------------------------------------
 def getMediaCards(game21):
     medias = []
     for url in game21.arr_cards_URL:
         medias.append(types.InputMediaPhoto(url))
     return medias
-
 
 #  ----------------------------------------------------------------------
 def send_link(chat_id):
@@ -269,6 +271,41 @@ def send_link(chat_id):
     bot.send_photo(chat_id, img, reply_markup=key1)
 
 # ----------------------------------------------------------------------
+def news_beta(chat_id):
+    news = []
+    news1 = []
+    news2 = []
+    TDay = (str(date.today())).split("-")
+    req_nw = requests.get(f"https://lenta.ru/news/{TDay[0]}/{TDay[1]}/{TDay[2]}/" )
+    soup = bs4.BeautifulSoup(req_nw.text, "html.parser")
+    res = soup.find(class_="item news b-tabloid__topic_news")
+    res1 = res.next_sibling
+    res2 = res1.next_sibling
+    # ---------------------
+    res_title = res.find(class_="card-title")
+    for res4 in res_title:
+        news.append(res4.getText().strip())
+    res_href = res.find(class_="titles")
+    news = news[0] + "\n\nИсточник:https://lenta.ru/" + res_href["href"]
+    # -------------------------
+    res_title = res1.find(class_="card-title")
+    for res4 in res_title:
+        news1.append(res4.getText().strip())
+    res_href = res1.find(class_="titles")
+    news1 = news1[0] + "\n\nИсточник:https://lenta.ru/" + res_href["href"]
+    # ---------------------
+    res_title = res2.find(class_="card-title")
+    for res4 in res_title:
+        news2.append(res4.getText().strip())
+    res_href = res2.find(class_="titles")
+    news2 = news2[0] + "\n\nИсточник:https://lenta.ru/" + res_href["href"]
+    # ----------------------
+    bot.send_message(chat_id, text="Сегодняшнии 3 новости")
+    bot.send_message(chat_id, text=news)
+    bot.send_message(chat_id, text=news1)
+    bot.send_message(chat_id, text=news2)
+
+# ---------------
 
 bot.polling(none_stop=True, interval=0)
 print()
